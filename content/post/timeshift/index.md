@@ -1,5 +1,5 @@
 ---
-title: "Timeshift"
+title: "Aprende: Timeshift"
 description: ¡Aprende a proteger tu sistema Linux con Timeshift en Debian 12 y restaura tu sistema como un profesional con snapshots súper seguros!
 date: 2024-06-03T22:26:17Z
 image: timeshift.jpg
