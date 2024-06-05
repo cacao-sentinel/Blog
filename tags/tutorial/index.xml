@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Tutorial on Aprendiendo Linux</title><link>https://cacao-sentinel.github.io/Blog/tags/tutorial/</link><description>Recent content in Tutorial on Aprendiendo Linux</description><generator>Hugo -- gohugo.io</generator><language>en-us</language><lastBuildDate>Mon, 03 Jun 2024 22:26:17 +0000</lastBuildDate><atom:link href="https://cacao-sentinel.github.io/Blog/tags/tutorial/index.xml" rel="self" type="application/rss+xml"/><item><title>Hugo!</title><link>https://cacao-sentinel.github.io/Blog/p/hugo/</link><pubDate>Sun, 02 Jun 2024 22:26:17 +0000</pubDate><guid>https://cacao-sentinel.github.io/Blog/p/hugo/</guid><description>&lt;img src="https://cacao-sentinel.github.io/Blog/p/hugo/cover.jpg" alt="Featured image of post Hugo!" />&lt;p>Welcome to Hugo theme Stack. This is your first post. Edit or delete it, then start writing!&lt;/p>
+&lt;p>For more information about this theme, check the documentation: &lt;a class="link" href="https://stack.jimmycai.com/" target="_blank" rel="noopener"
+>https://stack.jimmycai.com/&lt;/a>&lt;/p>
+&lt;p>Want a site like this? Check out &lt;a class="link" href="https://github.com/CaiJimmy/hugo-theme-stack-starter" target="_blank" rel="noopener"
+>hugo-theme-stack-stater&lt;/a>&lt;/p></description></item><item><title>Aprende: Timeshift</title><link>https://cacao-sentinel.github.io/Blog/p/aprende-timeshift/</link><pubDate>Mon, 03 Jun 2024 22:26:17 +0000</pubDate><guid>https://cacao-sentinel.github.io/Blog/p/aprende-timeshift/</guid><description>&lt;img src="https://cacao-sentinel.github.io/Blog/p/aprende-timeshift/timeshift.jpg" alt="Featured image of post Aprende: Timeshift" />&lt;h2 id="creación-de-snapshots-con-timeshift-en-debian-12-un-paso-esencial-para-la-ciberseguridad-en-linux">Creación de Snapshots con Timeshift en Debian 12: Un Paso Esencial para la Ciberseguridad en Linux
+&lt;/h2>&lt;p>Este informe proporciona una guía detallada para crear snapshots de tu sistema Debian 12 utilizando Timeshift. Los snapshots son copias de seguridad incrementales que te permiten restaurar tu sistema a un estado anterior en caso de fallos o errores. Aprender a usar Timeshift es especialmente importante en el campo de la ciberseguridad y para usuarios de Linux, ya que permite mantener la integridad y seguridad del sistema, facilitando la recuperación ante incidentes de seguridad, fallos de software o errores del usuario. Esta guía está diseñada para ser entendida por cualquier persona con conocimientos básicos de terminal y Linux.&lt;/p>
+&lt;h3 id="introducción">Introducción
+&lt;/h3>&lt;p>Timeshift es una herramienta de copia de seguridad y restauración de sistemas diseñada para sistemas operativos basados en Linux. Utiliza snapshots para proteger tu sistema y archivos, permitiéndote volver a un estado anterior en caso de problemas. En el contexto de la ciberseguridad, Timeshift es esencial para garantizar la continuidad y seguridad del sistema, permitiendo una rápida recuperación ante ataques, errores de configuración, o actualizaciones fallidas. Este informe cubrirá los siguientes pasos:&lt;/p>
+&lt;ol>
+&lt;li>Preparación del entorno&lt;/li>
+&lt;li>Instalación de Timeshift&lt;/li>
+&lt;li>Configuración del disco externo&lt;/li>
+&lt;li>Creación y gestión de snapshots (GUI y terminal)&lt;/li>
+&lt;li>Automatización del montaje del disco externo&lt;/li>
+&lt;li>Creación de Snapshots desde la Terminal&lt;/li>
+&lt;/ol>
+&lt;h3 id="1-preparación-del-entorno">1. Preparación del Entorno
+&lt;/h3>&lt;h4 id="actualizar-el-sistema">Actualizar el Sistema
+&lt;/h4>&lt;p>Es importante asegurarse de que tu sistema esté actualizado antes de instalar nuevas herramientas. Abre una terminal y ejecuta:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo apt update &lt;span class="o">&amp;amp;&amp;amp;&lt;/span> sudo apt upgrade -y
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Este comando actualiza la lista de paquetes disponibles y actualiza todos los paquetes instalados a la última versión disponible.&lt;/p>
+&lt;h3 id="2-instalación-de-timeshift">2. Instalación de Timeshift
+&lt;/h3>&lt;p>Para instalar la última versión de Timeshift en Debian 12, sigue estos pasos:&lt;/p>
+&lt;h4 id="instalar-dependencias">Instalar Dependencias
+&lt;/h4>&lt;p>Primero, instala las dependencias necesarias:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo apt install meson help2man gettext valac libvte-2.91-dev libgee-0.8-dev libjson-glib-dev libxapp-dev
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="clonar-el-repositorio-de-timeshift">Clonar el Repositorio de Timeshift
+&lt;/h4>&lt;p>Clona el repositorio oficial de Timeshift desde GitHub:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">git clone https://github.com/linuxmint/timeshift.git
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="construir-timeshift">Construir Timeshift
+&lt;/h4>&lt;p>Navega a la carpeta de Timeshift y construye el software:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;span class="lnt">3
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">cd&lt;/span> timeshift
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">meson setup build
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">meson compile -C build
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="instalar-timeshift">Instalar Timeshift
+&lt;/h4>&lt;p>Instala Timeshift en tu sistema:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo meson install -C build
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="3-configuración-del-disco-externo">3. Configuración del Disco Externo
+&lt;/h3>&lt;p>Para utilizar un disco externo con Timeshift, es necesario crear una partición y formatearla con un sistema de archivos compatible, como &lt;code>ext4&lt;/code>.&lt;/p>
+&lt;h4 id="identificar-el-disco-externo">Identificar el Disco Externo
+&lt;/h4>&lt;p>Conecta tu disco externo y utiliza &lt;code>lsblk&lt;/code> para identificarlo:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">lsblk
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Busca tu disco en la lista, normalmente aparecerá como &lt;code>/dev/sdX&lt;/code> (reemplaza &lt;code>X&lt;/code> con la letra correspondiente).&lt;/p>
+&lt;h4 id="eliminar-particiones-existentes">Eliminar Particiones Existentes
+&lt;/h4>&lt;p>Si el disco tiene particiones existentes, elimínalas para crear una nueva partición desde cero:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo fdisk /dev/sdX
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Dentro del menú de &lt;code>fdisk&lt;/code>:&lt;/p>
+&lt;ol>
+&lt;li>Pulsa &lt;code>d&lt;/code> para eliminar una partición existente.&lt;/li>
+&lt;li>Si hay varias particiones, repite el paso hasta eliminarlas todas.&lt;/li>
+&lt;li>Pulsa &lt;code>w&lt;/code> para escribir los cambios y salir.&lt;/li>
+&lt;/ol>
+&lt;h4 id="crear-una-nueva-partición">Crear una Nueva Partición
+&lt;/h4>&lt;p>Abre &lt;code>fdisk&lt;/code> de nuevo para crear una nueva partición:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo fdisk /dev/sdX
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Dentro del menú de &lt;code>fdisk&lt;/code>:&lt;/p>
+&lt;ol>
+&lt;li>Pulsa &lt;code>n&lt;/code> para crear una nueva partición.&lt;/li>
+&lt;li>Selecciona &lt;code>p&lt;/code> para hacer una partición primaria.&lt;/li>
+&lt;li>Elige el número de la partición (generalmente 1).&lt;/li>
+&lt;li>Especifica el tamaño de la partición o presiona Enter para usar todo el espacio disponible.&lt;/li>
+&lt;li>Pulsa &lt;code>w&lt;/code> para escribir los cambios y salir.&lt;/li>
+&lt;/ol>
+&lt;h4 id="formatear-la-partición">Formatear la Partición
+&lt;/h4>&lt;p>Formatea la partición recién creada con el sistema de archivos &lt;code>ext4&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo mkfs.ext4 /dev/sdX1
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="4-creación-y-gestión-de-snapshots">4. Creación y Gestión de Snapshots
+&lt;/h3>&lt;h4 id="montar-la-partición">Montar la Partición
+&lt;/h4>&lt;p>Crea un punto de montaje y monta la partición:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo mkdir -p /mnt/timeshift
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mount /dev/sdX1 /mnt/timeshift
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h4 id="configurar-timeshift-gui">Configurar Timeshift (GUI)
+&lt;/h4>&lt;p>Para configurar Timeshift usando la interfaz gráfica:&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>Ejecuta Timeshift:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo timeshift-gtk
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;li>
+&lt;p>Sigue el asistente de configuración para seleccionar el tipo de snapshot (RSYNC o BTRFS), el disco de destino (selecciona &lt;code>/mnt/timeshift&lt;/code>), y los intervalos de tiempo para los snapshots.&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Finaliza la configuración y Timeshift creará el primer snapshot automáticamente.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="configurar-timeshift-terminal">Configurar Timeshift (Terminal)
+&lt;/h4>&lt;p>Para configurar Timeshift usando la terminal:&lt;/p>
+&lt;ol>
+&lt;li>
+&lt;p>Crea un snapshot manualmente:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo timeshift --create --comments &lt;span class="s2">&amp;#34;Initial snapshot&amp;#34;&lt;/span> --tags D
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Este comando crea un snapshot del sistema y le asigna el tag D (diario).&lt;/p>
+&lt;/li>
+&lt;li>
+&lt;p>Listar Snapshots:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo timeshift --list
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;/li>
+&lt;/ol>
+&lt;h3 id="5-automatización-del-montaje-del-disco-externo">5. Automatización del Montaje del Disco Externo
+&lt;/h3>&lt;p>Para asegurarte de que la partición se monta automáticamente en cada arranque, edita el archivo &lt;code>/etc/fstab&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">&lt;span class="nb">echo&lt;/span> &lt;span class="s1">&amp;#39;/dev/sdX1 /mnt/timeshift ext4 defaults 0 2&amp;#39;&lt;/span> &lt;span class="p">|&lt;/span> sudo tee -a /etc/fstab
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Este comando añade una entrada a &lt;code>fstab&lt;/code> para montar automáticamente la partición en cada arranque del sistema.&lt;/p>
+&lt;h4 id="verificar-la-configuración">Verificar la Configuración
+&lt;/h4>&lt;p>Desmonta y vuelve a montar la partición para verificar que todo está configurado correctamente:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;span class="lnt">2
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo umount /mnt/timeshift
+&lt;/span>&lt;/span>&lt;span class="line">&lt;span class="cl">sudo mount -a
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;h3 id="6-creación-de-snapshots-desde-la-terminal">6. Creación de Snapshots desde la Terminal
+&lt;/h3>&lt;p>Para crear y gestionar snapshots con Timeshift desde la terminal, sigue estos pasos detallados:&lt;/p>
+&lt;h4 id="configurar-timeshift-inicialmente">Configurar Timeshift Inicialmente
+&lt;/h4>&lt;ol>
+&lt;li>
+&lt;p>Configura Timeshift para usar la partición montada en &lt;code>/mnt/timeshift&lt;/code>:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo timeshift --snapshot-device /mnt/timeshift
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Esto configura Timeshift para usar el dispositivo montado en &lt;code>/mnt/timeshift&lt;/code> como destino para los snapshots.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="crear-un-snapshot">Crear un Snapshot
+&lt;/h4>&lt;ol>
+&lt;li>
+&lt;p>Crea un snapshot manualmente con el siguiente comando:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo timeshift --create --comments &lt;span class="s2">&amp;#34;Initial snapshot&amp;#34;&lt;/span> --tags D
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Este comando crea un snapshot del sistema con el comentario &amp;ldquo;Initial snapshot&amp;rdquo; y lo etiqueta como D (Diario).&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="listar-snapshots">Listar Snapshots
+&lt;/h4>&lt;ol>
+&lt;li>
+&lt;p>Lista todos los snapshots disponibles:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo timeshift --list
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Este comando muestra una lista de todos los snapshots creados, junto con detalles como la fecha y el tamaño.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="restaurar-un-snapshot">Restaurar un Snapshot
+&lt;/h4>&lt;ol>
+&lt;li>
+&lt;p>Para restaurar un snapshot específico, usa el siguiente comando:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo timeshift --restore --snapshot &lt;span class="s2">&amp;#34;nombre_del_snapshot&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Reemplaza &amp;ldquo;nombre_del_snapshot&amp;rdquo; con el nombre del snapshot que deseas restaurar. Timeshift te guiará a través del proceso de restauración.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="programar-snapshots-automáticos">Programar Snapshots Automáticos
+&lt;/h4>&lt;ol>
+&lt;li>
+&lt;p>Para configurar snapshots automáticos, edita el archivo de configuración de Timeshift:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo nano /etc/timeshift.json
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Ajusta las configuraciones según tus necesidades, por ejemplo, el intervalo de tiempo para crear snapshots diarios, semanales o mensuales.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h4 id="eliminar-snapshots">Eliminar Snapshots
+&lt;/h4>&lt;ol>
+&lt;li>
+&lt;p>Para eliminar un snapshot específico, usa el siguiente comando:&lt;/p>
+&lt;div class="highlight">&lt;div class="chroma">
+&lt;table class="lntable">&lt;tr>&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code>&lt;span class="lnt">1
+&lt;/span>&lt;/code>&lt;/pre>&lt;/td>
+&lt;td class="lntd">
+&lt;pre tabindex="0" class="chroma">&lt;code class="language-sh" data-lang="sh">&lt;span class="line">&lt;span class="cl">sudo timeshift --delete --snapshot &lt;span class="s2">&amp;#34;nombre_del_snapshot&amp;#34;&lt;/span>
+&lt;/span>&lt;/span>&lt;/code>&lt;/pre>&lt;/td>&lt;/tr>&lt;/table>
+&lt;/div>
+&lt;/div>&lt;p>Esto elimina el snapshot especificado, liberando espacio en el disco.&lt;/p>
+&lt;/li>
+&lt;/ol>
+&lt;h3 id="conclusión">Conclusión
+&lt;/h3>&lt;p>Siguiendo estos pasos, has configurado exitosamente Timeshift en Debian 12 y has aprendido a:&lt;/p>
+&lt;ol>
+&lt;li>Instalar la última versión de Timeshift.&lt;/li>
+&lt;li>Configurar y formatear un disco externo.&lt;/li>
+&lt;li>Automatizar el montaje de la partición en cada arranque.&lt;/li>
+&lt;li>Crear, listar, restaurar y eliminar snapshots desde la terminal.&lt;/li>
+&lt;/ol>
+&lt;p>Timeshift es una herramienta esencial para mantener la integridad y seguridad de tu sistema. Con snapshots regulares, puedes asegurarte de que siempre tendrás un punto de restauración reciente en caso de fallos o errores.&lt;/p>
+&lt;h3 id="recursos-adicionales">Recursos Adicionales
+&lt;/h3>&lt;ul>
+&lt;li>&lt;a class="link" href="https://teejeetech.in/timeshift/" target="_blank" rel="noopener"
+>Documentación de Timeshift&lt;/a>&lt;/li>
+&lt;li>&lt;a class="link" href="https://www.debian.org/doc/user-manuals" target="_blank" rel="noopener"
+>Debian User Documentation&lt;/a>&lt;/li>
+&lt;/ul></description></item></channel></rss>
