@@ -5,9 +5,10 @@ date: 2024-06-03T22:26:17Z
 image: timeshift.jpg
 math: 
 license: 
-hidden: false
-comments: true
-draft: false
+categories:
+    - Tutorial
+tags:
+    - Tutorial
 ---
 
 ## Creación de Snapshots con Timeshift en Debian 12: Un Paso Esencial para la Ciberseguridad en Linux

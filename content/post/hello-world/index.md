@@ -5,7 +5,7 @@ slug: hugo
 date: 2024-06-02T22:26:17Z
 image: cover.jpg
 categories:
-    - Example Category
+    - Tutorial
 tags:
     - Example Tag
 weight: 1       # You can add weight to some posts to override the default sorting (date descending)
